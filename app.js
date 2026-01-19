@@ -38,16 +38,36 @@ function abrirParqueDesdeURL() {
     const nombreParque = getURLParameter('parque');
     if (!nombreParque) return;
     
-    // Decodificar el nombre del parque (reemplazar guiones por espacios)
-    const nombreBuscado = decodeURIComponent(nombreParque).replace(/-/g, ' ').toLowerCase();
+    // Decodificar correctamente el nombre del parque
+    let nombreBuscado = nombreParque.replace(/-/g, ' ');
+    
+    // Intentar decodificar si tiene caracteres especiales
+    try {
+        nombreBuscado = decodeURIComponent(nombreBuscado);
+    } catch(e) {
+        // Si falla, usar el nombre tal cual
+    }
+    
+    nombreBuscado = nombreBuscado.toLowerCase();
     
     console.log('🔍 Buscando parque:', nombreBuscado);
     
-    // Buscar el parque en los marcadores
-    const parqueEncontrado = allMarkers.find(item => {
+    // Buscar el parque en los marcadores con coincidencia exacta
+    let parqueEncontrado = allMarkers.find(item => {
         const nombre = (item.data.properties.Name || '').toLowerCase();
         return nombre === nombreBuscado;
     });
+    
+    // Si no se encuentra con coincidencia exacta, buscar parcial
+    if (!parqueEncontrado) {
+        parqueEncontrado = allMarkers.find(item => {
+            const nombre = (item.data.properties.Name || '').toLowerCase();
+            // Normalizar para comparar sin acentos
+            const nombreNormalizado = nombre.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            const buscadoNormalizado = nombreBuscado.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            return nombreNormalizado === buscadoNormalizado;
+        });
+    }
     
     if (parqueEncontrado) {
         console.log('✅ Parque encontrado:', parqueEncontrado.data.properties.Name);
