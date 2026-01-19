@@ -24,6 +24,45 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ======================================
+// LEER PARÁMETROS DE LA URL
+// ======================================
+function getURLParameter(name) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(name);
+}
+
+// ======================================
+// ABRIR PARQUE ESPECÍFICO DESDE URL
+// ======================================
+function abrirParqueDesdeURL() {
+    const nombreParque = getURLParameter('parque');
+    if (!nombreParque) return;
+    
+    // Decodificar el nombre del parque (reemplazar guiones por espacios)
+    const nombreBuscado = decodeURIComponent(nombreParque).replace(/-/g, ' ').toLowerCase();
+    
+    // Buscar el parque en los marcadores
+    const parqueEncontrado = allMarkers.find(item => {
+        const nombre = (item.data.properties.Name || '').toLowerCase();
+        return nombre === nombreBuscado;
+    });
+    
+    if (parqueEncontrado) {
+        // Hacer zoom al parque
+        map.setView([parqueEncontrado.lat, parqueEncontrado.lng], 17);
+        
+        // Abrir el popup después de un pequeño delay
+        setTimeout(() => {
+            parqueEncontrado.marker.openPopup();
+        }, 500);
+        
+        console.log('✅ Parque encontrado:', parqueEncontrado.data.properties.Name);
+    } else {
+        console.warn('⚠️ No se encontró el parque:', nombreBuscado);
+    }
+}
+
+// ======================================
 // INICIALIZACIÓN DEL MAPA
 // ======================================
 function initMap() {
@@ -213,6 +252,9 @@ function processData(features) {
 
     // Actualizar información
     updateInfo();
+    
+    // Verificar si hay un parque en la URL para abrirlo
+    abrirParqueDesdeURL();
 }
 
 // ======================================
