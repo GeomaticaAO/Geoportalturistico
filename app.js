@@ -213,6 +213,41 @@ function processData(features) {
 
     // Actualizar información
     updateInfo();
+    
+    // Verificar si hay un parámetro de parque en la URL
+    checkParqueParameter();
+}
+
+// ======================================
+// DETECTAR PARÁMETRO DE PARQUE EN URL
+// ======================================
+function checkParqueParameter() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const parqueId = urlParams.get('parque');
+    
+    if (parqueId !== null) {
+        const index = parseInt(parqueId);
+        
+        // Verificar que el índice sea válido
+        if (index >= 0 && index < allMarkers.length) {
+            const parqueSeleccionado = allMarkers[index];
+            
+            // Esperar un momento para asegurar que el mapa esté completamente cargado
+            setTimeout(() => {
+                // Centrar el mapa en el parque con zoom apropiado
+                map.setView([parqueSeleccionado.lat, parqueSeleccionado.lng], 17);
+                
+                // Abrir el popup después de centrar el mapa
+                setTimeout(() => {
+                    parqueSeleccionado.marker.openPopup();
+                }, 500);
+            }, 300);
+            
+            console.log(`✅ Parque ${index} seleccionado:`, parqueSeleccionado.data.properties.Name);
+        } else {
+            console.warn(`⚠️ Índice de parque inválido: ${index}`);
+        }
+    }
 }
 
 // ======================================
