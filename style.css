@@ -1,0 +1,527 @@
+/* ======================================
+   RESET Y CONFIGURACIÓN BASE
+   ====================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary-color: #2E7D32;
+    --primary-dark: #1B5E20;
+    --secondary-color: #4CAF50;
+    --text-dark: #333;
+    --text-light: #fff;
+    --bg-light: #f8f9fa;
+    --shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.2);
+    --header-height: 60px;
+    --border-radius: 8px;
+}
+
+html, body {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* ======================================
+   HEADER
+   ====================================== */
+.app-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--header-height);
+    background: linear-gradient(135deg, #922B21, #7a1f1a) !important;
+    color: var(--text-light);
+    box-shadow: var(--shadow-lg);
+    z-index: 3000;
+    display: flex;
+    align-items: center;
+    padding: 0;
+}
+
+.header-content {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 15px;
+}
+
+.app-header h1 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.menu-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: var(--text-light);
+    font-size: 1.4rem;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s ease;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.menu-btn:active {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* ======================================
+   MAPA
+   ====================================== */
+#map {
+    position: fixed;
+    top: var(--header-height);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    touch-action: none; /* Importante para el control táctil */
+}
+
+/* Mejoras para controles de Leaflet en móvil */
+.leaflet-control-zoom {
+    margin-top: 10px !important;
+    margin-right: 10px !important;
+}
+
+.leaflet-control-zoom a {
+    width: 36px !important;
+    height: 36px !important;
+    line-height: 36px !important;
+    font-size: 20px !important;
+}
+
+.leaflet-control-layers {
+    margin-top: 10px !important;
+}
+
+/* ======================================
+   BOTÓN FLOTANTE DE UBICACIÓN
+   ====================================== */
+.floating-btn {
+    position: fixed;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--text-light);
+    border: none;
+    box-shadow: var(--shadow-lg);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    color: var(--primary-color);
+    z-index: 900;
+    transition: all 0.3s ease;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.floating-btn:active {
+    transform: scale(0.95);
+    box-shadow: var(--shadow);
+}
+
+.location-btn {
+    bottom: 30px;
+    right: 15px;
+}
+
+.nearest-btn {
+    bottom: 90px;
+    right: 15px;
+    background: var(--primary-color);
+    color: white;
+}
+
+.nearest-btn:hover {
+    background: #1B5E20;
+}
+
+.location-btn.loading {
+    color: var(--secondary-color);
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+/* ======================================
+   PANEL LATERAL
+   ====================================== */
+.side-panel {
+    position: fixed;
+    top: var(--header-height);
+    right: -100%;
+    width: 85%;
+    max-width: 350px;
+    height: calc(100% - var(--header-height));
+    background: var(--text-light);
+    box-shadow: var(--shadow-lg);
+    z-index: 1100;
+    transition: right 0.3s ease;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.side-panel.active {
+    right: 0;
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background: var(--bg-light);
+    border-bottom: 1px solid #ddd;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.panel-header h2 {
+    font-size: 1.3rem;
+    color: var(--text-dark);
+    margin: 0;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--text-dark);
+    cursor: pointer;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.panel-content {
+    padding: 20px;
+}
+
+.filter-section {
+    margin-bottom: 25px;
+}
+
+.filter-section label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: var(--text-dark);
+    font-size: 0.95rem;
+}
+
+.filter-section label i {
+    margin-right: 8px;
+    color: var(--primary-color);
+}
+
+.filter-section input,
+.filter-section select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    font-family: inherit;
+    transition: border-color 0.3s ease;
+}
+
+.filter-section input:focus,
+.filter-section select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.info-section {
+    margin-top: 30px;
+    padding: 15px;
+    background: var(--bg-light);
+    border-radius: var(--border-radius);
+    border-left: 4px solid var(--primary-color);
+}
+
+.info-section h3 {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+    color: var(--text-dark);
+}
+
+.info-section h3 i {
+    margin-right: 8px;
+    color: var(--primary-color);
+}
+
+.info-section p {
+    margin: 5px 0;
+    color: var(--text-dark);
+    font-size: 0.95rem;
+}
+
+/* ======================================
+   OVERLAY
+   ====================================== */
+.overlay {
+    position: fixed;
+    top: var(--header-height);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1050;
+    display: none;
+}
+
+.overlay.active {
+    display: block;
+}
+
+/* ======================================
+   LOADING INDICATOR
+   ====================================== */
+.loading-indicator {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--text-light);
+    padding: 30px 40px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-lg);
+    z-index: 2000;
+    text-align: center;
+    display: none;
+}
+
+.loading-indicator.active {
+    display: block;
+}
+
+.spinner {
+    border: 4px solid var(--bg-light);
+    border-top: 4px solid var(--primary-color);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 15px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-indicator p {
+    margin: 0;
+    color: var(--text-dark);
+    font-weight: 500;
+}
+
+/* ======================================
+   POPUPS PERSONALIZADOS
+   ====================================== */
+.leaflet-popup-content-wrapper {
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-lg);
+}
+
+.leaflet-popup-content {
+    margin: 15px;
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+.leaflet-popup-content h3 {
+    color: var(--primary-color);
+    margin: 0 0 10px 0;
+    font-size: 1.1rem;
+}
+
+.leaflet-popup-content strong {
+    color: var(--text-dark);
+}
+
+.popup-link {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 8px 15px;
+    background: var(--primary-color);
+    color: var(--text-light);
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 0.85rem;
+    transition: background 0.3s ease;
+}
+
+.popup-link:hover {
+    background: var(--primary-dark);
+}
+
+/* ======================================
+   MARCADORES PERSONALIZADOS
+   ====================================== */
+.custom-marker {
+    background: var(--primary-color);
+    border: 3px solid var(--text-light);
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-light);
+    font-weight: bold;
+    box-shadow: var(--shadow);
+}
+
+/* Animación para marcador de ubicación actual */
+.user-location-marker {
+    width: 20px;
+    height: 20px;
+    background: #4285F4;
+    border: 4px solid white;
+    border-radius: 50%;
+    box-shadow: 0 0 0 rgba(66, 133, 244, 0.4);
+    animation: locationPulse 2s infinite;
+}
+
+/* Estilo para el icono de árbol */
+.tree-marker-icon {
+    background: transparent !important;
+    border: none !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@keyframes locationPulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(66, 133, 244, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 15px rgba(66, 133, 244, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(66, 133, 244, 0);
+    }
+}
+
+/* ======================================
+   MEDIA QUERIES
+   ====================================== */
+
+/* Tablets en modo portrait */
+@media (min-width: 576px) {
+    .app-header h1 {
+        font-size: 1.4rem;
+    }
+    
+    .side-panel {
+        width: 400px;
+    }
+}
+
+/* Tablets en modo landscape y pequeños desktops */
+@media (min-width: 768px) {
+    .app-header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .location-btn {
+        bottom: 40px;
+        right: 20px;
+        width: 55px;
+        height: 55px;
+    }
+}
+
+/* Desktops */
+@media (min-width: 992px) {
+    :root {
+        --header-height: 70px;
+    }
+    
+    .app-header h1 {
+        font-size: 1.6rem;
+    }
+    
+    .header-content {
+        padding: 0 30px;
+    }
+    
+    .side-panel {
+        width: 420px;
+    }
+}
+
+/* Modo landscape en móviles */
+@media (max-height: 500px) and (orientation: landscape) {
+    :root {
+        --header-height: 50px;
+    }
+    
+    .app-header h1 {
+        font-size: 1rem;
+    }
+    
+    .location-btn {
+        width: 45px;
+        height: 45px;
+        bottom: 15px;
+        right: 10px;
+    }
+}
+
+/* ======================================
+   ACCESIBILIDAD Y MEJORAS TÁCTILES
+   ====================================== */
+@media (hover: none) and (pointer: coarse) {
+    /* Dispositivos táctiles - aumentar área de toque */
+    .menu-btn,
+    .close-btn,
+    .floating-btn {
+        min-width: 44px;
+        min-height: 44px;
+    }
+}
+
+/* Modo oscuro (preferencia del sistema) */
+@media (prefers-color-scheme: dark) {
+    /* Opcionalmente, puedes agregar estilos para modo oscuro aquí */
+}
+
+/* Reducir animaciones si el usuario lo prefiere */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
