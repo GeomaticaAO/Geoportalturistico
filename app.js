@@ -226,10 +226,10 @@ function checkParqueParameter() {
     const parqueId = urlParams.get('parque');
     
     if (parqueId !== null) {
-        const index = parseInt(parqueId);
+        const index = parseInt(parqueId, 10);
         
         // Verificar que el índice sea válido
-        if (index >= 0 && index < allMarkers.length) {
+        if (!isNaN(index) && index >= 0 && index < allMarkers.length) {
             const parqueSeleccionado = allMarkers[index];
             
             // Esperar un momento para asegurar que el mapa esté completamente cargado
