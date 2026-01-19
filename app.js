@@ -72,16 +72,16 @@ function abrirParqueDesdeURL() {
     if (parqueEncontrado) {
         console.log('✅ Parque encontrado:', parqueEncontrado.data.properties.Name);
         
-        // Primero cambiar el zoom sin animación para que sea inmediato
-        map.setView([parqueEncontrado.lat, parqueEncontrado.lng], 18, {
+        // Hacer zoom al parque de forma más directa
+        map.flyTo([parqueEncontrado.lat, parqueEncontrado.lng], 18, {
             animate: true,
-            duration: 1
+            duration: 1.5
         });
         
         // Abrir el popup después de que termine la animación
         setTimeout(() => {
             parqueEncontrado.marker.openPopup();
-        }, 800);
+        }, 1600);
     } else {
         console.warn('⚠️ No se encontró el parque:', nombreBuscado);
         console.log('Parques disponibles:', allMarkers.map(m => m.data.properties.Name));
