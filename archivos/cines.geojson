@@ -1,0 +1,20 @@
+{
+"type": "FeatureCollection",
+"name": "cines",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "Nombre": "CINEMANIA" }, "geometry": { "type": "Point", "coordinates": [ -99.19286151, 19.33844196 ] } },
+{ "type": "Feature", "properties": { "Nombre": "CINEPOLIS TENARIA CENTENARIO" }, "geometry": { "type": "Point", "coordinates": [ -99.22288983, 19.3617266 ] } },
+{ "type": "Feature", "properties": { "Nombre": "CINEPOLIS VIP PORTAL SAN ANGEL" }, "geometry": { "type": "Point", "coordinates": [ -99.18955297, 19.36089174 ] } },
+{ "type": "Feature", "properties": { "Nombre": "CINEPOLIS VIP SAMARA" }, "geometry": { "type": "Point", "coordinates": [ -99.25990552, 19.36811761 ] } },
+{ "type": "Feature", "properties": { "Nombre": "CINEPOLIS PATIO SANTA FE" }, "geometry": { "type": "Point", "coordinates": [ -99.25396767, 19.37837366 ] } },
+{ "type": "Feature", "properties": { "Nombre": "CINEPOLIS PORTAL SAN ANGEL" }, "geometry": { "type": "Point", "coordinates": [ -99.18955906, 19.36082219 ] } },
+{ "type": "Feature", "properties": { "Nombre": "180 CINEMEX PARK PLAZA PLATINO" }, "geometry": { "type": "Point", "coordinates": [ -99.2602555, 19.36422951 ] } },
+{ "type": "Feature", "properties": { "Nombre": "195 CINEMEX PATIO REVOLUCION PLATINO" }, "geometry": { "type": "Point", "coordinates": [ -99.19100683, 19.34192247 ] } },
+{ "type": "Feature", "properties": { "Nombre": "143 CINEMEX LORETO PREMIUM" }, "geometry": { "type": "Point", "coordinates": [ -99.19284849, 19.33983268 ] } },
+{ "type": "Feature", "properties": { "Nombre": "311 CINEMEX CORPORATIVO" }, "geometry": { "type": "Point", "coordinates": [ -99.26065256, 19.36410092 ] } },
+{ "type": "Feature", "properties": { "Nombre": "9 CINEMEX ALTAVISTA PREMIUM" }, "geometry": { "type": "Point", "coordinates": [ -99.19000601, 19.34900914 ] } },
+{ "type": "Feature", "properties": { "Nombre": "20 CINEMEX ARTZ PEDREGAL PREMIUM MARKET" }, "geometry": { "type": "Point", "coordinates": [ -99.22045324, 19.31437711 ] } },
+{ "type": "Feature", "properties": { "Nombre": "249 CINEMEX SAN ANTONIO TRADICIONAL" }, "geometry": { "type": "Point", "coordinates": [ -99.19116988, 19.38949449 ] } }
+]
+}

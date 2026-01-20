@@ -1,0 +1,20 @@
+{
+"type": "FeatureCollection",
+"name": "hoteles",
+"features": [
+{ "type": "Feature", "properties": { "Nombre": "HILTON" }, "geometry": { "type": "Point", "coordinates": [ -99.25907357, 19.36696465 ] } },
+{ "type": "Feature", "properties": { "Nombre": "GXSFE GAMMA CIUDAD DE MEXICO SANTA FE" }, "geometry": { "type": "Point", "coordinates": [ -99.26267014, 19.36518924 ] } },
+{ "type": "Feature", "properties": { "Nombre": "GRUPO TURISTICO BOISFERA" }, "geometry": { "type": "Point", "coordinates": [ -99.19301094, 19.35321575 ] } },
+{ "type": "Feature", "properties": { "Nombre": "OFICINA HOTELES RODAVENTO" }, "geometry": { "type": "Point", "coordinates": [ -99.26226429, 19.36705042 ] } },
+{ "type": "Feature", "properties": { "Nombre": "ADMINISTRADORA DE HOTELES GRT" }, "geometry": { "type": "Point", "coordinates": [ -99.26149239, 19.3678021 ] } },
+{ "type": "Feature", "properties": { "Nombre": "HOTEL SANTA FE" }, "geometry": { "type": "Point", "coordinates": [ -99.24013766, 19.38851682 ] } },
+{ "type": "Feature", "properties": { "Nombre": "HOTEL RAMADA" }, "geometry": { "type": "Point", "coordinates": [ -99.24535816, 19.37956226 ] } },
+{ "type": "Feature", "properties": { "Nombre": "HOTEL QUINTO ELEMENTO LOVE SUITES" }, "geometry": { "type": "Point", "coordinates": [ -99.20532272, 19.33756767 ] } },
+{ "type": "Feature", "properties": { "Nombre": "HOTEL LA MORALEJA" }, "geometry": { "type": "Point", "coordinates": [ -99.24653552, 19.37920271 ] } },
+{ "type": "Feature", "properties": { "Nombre": "NOVOTEL MEXICO SANTA FE" }, "geometry": { "type": "Point", "coordinates": [ -99.25982921, 19.3672397 ] } },
+{ "type": "Feature", "properties": { "Nombre": "INMOBILIARIA EMAR" }, "geometry": { "type": "Point", "coordinates": [ -99.26145544, 19.36792776 ] } },
+{ "type": "Feature", "properties": { "Nombre": "OPERADORA DE HOTELES CARIDIAZ SANTA FE" }, "geometry": { "type": "Point", "coordinates": [ -99.26071305, 19.36728669 ] } },
+{ "type": "Feature", "properties": { "Nombre": "OPERADORA 26 SANTA FE" }, "geometry": { "type": "Point", "coordinates": [ -99.26214764, 19.36476756 ] } },
+{ "type": "Feature", "properties": { "Nombre": "THE WESTIN SANTA FE MEXICO CITY" }, "geometry": { "type": "Point", "coordinates": [ -99.26065353, 19.36409952 ] } }
+]
+}
