@@ -8,7 +8,6 @@
 { "type": "Feature", "properties": { "Nombre": "CINEPOLIS VIP PORTAL SAN ANGEL" }, "geometry": { "type": "Point", "coordinates": [ -99.18955297, 19.36089174 ] } },
 { "type": "Feature", "properties": { "Nombre": "CINEPOLIS VIP SAMARA" }, "geometry": { "type": "Point", "coordinates": [ -99.25990552, 19.36811761 ] } },
 { "type": "Feature", "properties": { "Nombre": "CINEPOLIS PATIO SANTA FE" }, "geometry": { "type": "Point", "coordinates": [ -99.25396767, 19.37837366 ] } },
-{ "type": "Feature", "properties": { "Nombre": "CINEPOLIS PORTAL SAN ANGEL" }, "geometry": { "type": "Point", "coordinates": [ -99.18955906, 19.36082219 ] } },
 { "type": "Feature", "properties": { "Nombre": "180 CINEMEX PARK PLAZA PLATINO" }, "geometry": { "type": "Point", "coordinates": [ -99.2602555, 19.36422951 ] } },
 { "type": "Feature", "properties": { "Nombre": "195 CINEMEX PATIO REVOLUCION PLATINO" }, "geometry": { "type": "Point", "coordinates": [ -99.19100683, 19.34192247 ] } },
 { "type": "Feature", "properties": { "Nombre": "143 CINEMEX LORETO PREMIUM" }, "geometry": { "type": "Point", "coordinates": [ -99.19284849, 19.33983268 ] } },
