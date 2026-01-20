@@ -2,10 +2,17 @@
 // CONFIGURACIÓN Y VARIABLES GLOBALES
 // ======================================
 const PARQUES_URL = 'archivos/parques.geojson';
+const CINES_URL = 'archivos/cines.geojson';
+const HOTELES_URL = 'archivos/hoteles.geojson';
+const MUSEOS_URL = 'archivos/museos.geojson';
 
 let map;
 let markersLayer;
 let allMarkers = [];
+let parquesMarkers = [];
+let cinesMarkers = [];
+let hotelesMarkers = [];
+let museosMarkers = [];
 let filteredMarkers = []; // Marcadores actualmente visibles
 let allData = [];
 let userLocationMarker = null;
@@ -21,6 +28,9 @@ document.addEventListener('DOMContentLoaded', function() {
     initMap();
     initEventListeners();
     loadData();
+    loadCines();
+    loadHoteles();
+    loadMuseos();
 });
 
 // ======================================
@@ -170,8 +180,16 @@ function initEventListeners() {
 
     // Filtros
     const searchInput = document.getElementById('searchInput');
+    const showParques = document.getElementById('showParques');
+    const showCines = document.getElementById('showCines');
+    const showHoteles = document.getElementById('showHoteles');
+    const showMuseos = document.getElementById('showMuseos');
 
     searchInput.addEventListener('input', debounce(filterMarkers, 300));
+    showParques.addEventListener('change', filterMarkers);
+    showCines.addEventListener('change', filterMarkers);
+    showHoteles.addEventListener('change', filterMarkers);
+    showMuseos.addEventListener('change', filterMarkers);
 }
 
 // ======================================
@@ -241,13 +259,73 @@ function loadData() {
         .then(data => {
             console.log('✅ Datos cargados:', data.features.length, 'parques');
             allData = data.features;
-            processData(data.features);
+            processData(data.features, 'parque');
             loadingIndicator.classList.remove('active');
         })
         .catch(error => {
             console.error('❌ Error al cargar datos:', error);
             loadingIndicator.classList.remove('active');
             alert('Error al cargar los parques.\n\nPor favor, intenta recargar la página.');
+        });
+}
+
+// ======================================
+// CARGA DE CINES
+// ======================================
+function loadCines() {
+    fetch(CINES_URL)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('No se pudo cargar el archivo de cines');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('✅ Cines cargados:', data.features.length, 'cines');
+            processData(data.features, 'cine');
+        })
+        .catch(error => {
+            console.error('❌ Error al cargar cines:', error);
+        });
+}
+
+// ======================================
+// CARGA DE HOTELES
+// ======================================
+function loadHoteles() {
+    fetch(HOTELES_URL)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('No se pudo cargar el archivo de hoteles');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('✅ Hoteles cargados:', data.features.length, 'hoteles');
+            processData(data.features, 'hotel');
+        })
+        .catch(error => {
+            console.error('❌ Error al cargar hoteles:', error);
+        });
+}
+
+// ======================================
+// CARGA DE MUSEOS
+// ======================================
+function loadMuseos() {
+    fetch(MUSEOS_URL)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('No se pudo cargar el archivo de museos');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('✅ Museos cargados:', data.features.length, 'museos');
+            processData(data.features, 'museo');
+        })
+        .catch(error => {
+            console.error('❌ Error al cargar museos:', error);
         });
 }
 
@@ -259,7 +337,7 @@ function loadDataWithProxy() {
 // ======================================
 // PROCESAMIENTO DE DATOS
 // ======================================
-function processData(features) {
+function processData(features, tipo) {
     features.forEach(feature => {
         const coords = feature.geometry.coordinates;
         const lng = coords[0];
@@ -270,36 +348,91 @@ function processData(features) {
             return;
         }
 
-        // Crear marcador
-        const marker = createMarker(feature, lat, lng);
-        allMarkers.push({ marker, data: feature, lat, lng });
+        // Crear marcador según el tipo
+        const marker = createMarker(feature, lat, lng, tipo);
+        const markerData = { marker, data: feature, lat, lng, tipo };
+        
+        allMarkers.push(markerData);
+        
+        // Agregar a array específico
+        switch(tipo) {
+            case 'parque':
+                parquesMarkers.push(markerData);
+                break;
+            case 'cine':
+                cinesMarkers.push(markerData);
+                break;
+            case 'hotel':
+                hotelesMarkers.push(markerData);
+                break;
+            case 'museo':
+                museosMarkers.push(markerData);
+                break;
+        }
+        
         markersLayer.addLayer(marker);
     });
 
     // Actualizar información
     updateInfo();
     
-    // Verificar si hay un parque en la URL para abrirlo
-    abrirParqueDesdeURL();
+    // Verificar si hay un parque en la URL para abrirlo (solo para parques)
+    if (tipo === 'parque') {
+        abrirParqueDesdeURL();
+    }
 }
 
 // ======================================
 // CREACIÓN DE MARCADORES
 // ======================================
-function createMarker(feature, lat, lng) {
-    // Icono personalizado para parques (árbol)
+function createMarker(feature, lat, lng, tipo) {
+    // Definir iconos según el tipo
+    let iconConfig;
+    
+    switch(tipo) {
+        case 'parque':
+            iconConfig = {
+                html: '<i class="fas fa-tree" style="color: #2E7D32; font-size: 28px; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;"></i>',
+                className: 'tree-marker-icon'
+            };
+            break;
+        case 'cine':
+            iconConfig = {
+                html: '<i class="fas fa-film" style="color: #E91E63; font-size: 28px; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;"></i>',
+                className: 'cine-marker-icon'
+            };
+            break;
+        case 'hotel':
+            iconConfig = {
+                html: '<i class="fas fa-hotel" style="color: #FF9800; font-size: 28px; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;"></i>',
+                className: 'hotel-marker-icon'
+            };
+            break;
+        case 'museo':
+            iconConfig = {
+                html: '<i class="fas fa-landmark" style="color: #9C27B0; font-size: 28px; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;"></i>',
+                className: 'museo-marker-icon'
+            };
+            break;
+        default:
+            iconConfig = {
+                html: '<i class="fas fa-map-marker-alt" style="color: #2196F3; font-size: 28px; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;"></i>',
+                className: 'default-marker-icon'
+            };
+    }
+    
     const icon = L.divIcon({
-        html: '<i class="fas fa-tree" style="color: #2E7D32; font-size: 28px; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;"></i>',
+        html: iconConfig.html,
         iconSize: [30, 30],
         iconAnchor: [15, 30],
         popupAnchor: [0, -30],
-        className: 'tree-marker-icon'
+        className: iconConfig.className
     });
 
     const marker = L.marker([lat, lng], { icon });
     
     // Crear contenido del popup
-    const popupContent = createPopupContent(feature);
+    const popupContent = createPopupContent(feature, tipo);
     marker.bindPopup(popupContent, {
         maxWidth: 300,
         className: 'custom-popup'
@@ -311,7 +444,7 @@ function createMarker(feature, lat, lng) {
 // ======================================
 // CONTENIDO DEL POPUP
 // ======================================
-function createPopupContent(feature) {
+function createPopupContent(feature, tipo) {
     const nombre = feature.properties.Name || 'Sin nombre';
     const coords = feature.geometry.coordinates;
     const lat = coords[1];
@@ -320,7 +453,32 @@ function createPopupContent(feature) {
     // Crear link de Google Maps
     const googleMapsLink = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
 
+    // Definir icono y color según el tipo
+    let iconClass, tipoTexto;
+    switch(tipo) {
+        case 'parque':
+            iconClass = 'fa-tree';
+            tipoTexto = 'Parque';
+            break;
+        case 'cine':
+            iconClass = 'fa-film';
+            tipoTexto = 'Cine';
+            break;
+        case 'hotel':
+            iconClass = 'fa-hotel';
+            tipoTexto = 'Hotel';
+            break;
+        case 'museo':
+            iconClass = 'fa-landmark';
+            tipoTexto = 'Museo';
+            break;
+        default:
+            iconClass = 'fa-map-marker-alt';
+            tipoTexto = 'Lugar';
+    }
+
     let content = `<div class="popup-content-custom">`;
+    content += `<div class="popup-tipo"><i class="fas ${iconClass}"></i> ${tipoTexto}</div>`;
     content += `<h3>${nombre}</h3>`;
     
     content += `<a href="${googleMapsLink}" target="_blank" class="popup-link"><i class="fas fa-route"></i> Cómo llegar</a>`;
@@ -334,12 +492,25 @@ function createPopupContent(feature) {
 // ======================================
 function filterMarkers() {
     const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const showParques = document.getElementById('showParques').checked;
+    const showCines = document.getElementById('showCines').checked;
+    const showHoteles = document.getElementById('showHoteles').checked;
+    const showMuseos = document.getElementById('showMuseos').checked;
 
     markersLayer.clearLayers();
 
     const filtered = allMarkers.filter(item => {
         const nombre = (item.data.properties.Name || '').toLowerCase();
-        return searchTerm === '' || nombre.includes(searchTerm);
+        const matchesSearch = searchTerm === '' || nombre.includes(searchTerm);
+        
+        // Verificar si el tipo está habilitado
+        let matchesType = false;
+        if (item.tipo === 'parque' && showParques) matchesType = true;
+        if (item.tipo === 'cine' && showCines) matchesType = true;
+        if (item.tipo === 'hotel' && showHoteles) matchesType = true;
+        if (item.tipo === 'museo' && showMuseos) matchesType = true;
+        
+        return matchesSearch && matchesType;
     });
 
     filtered.forEach(item => {
@@ -359,8 +530,21 @@ function filterMarkers() {
 function updateInfo(count) {
     const totalPuntos = document.getElementById('totalPuntos');
     const total = count !== undefined ? count : allMarkers.length;
+    
+    // Calcular totales por tipo
+    const parques = parquesMarkers.length;
+    const cines = cinesMarkers.length;
+    const hoteles = hotelesMarkers.length;
+    const museos = museosMarkers.length;
+    
     totalPuntos.innerHTML = `
-        <strong>${total}</strong> parque${total !== 1 ? 's' : ''} ${count !== undefined ? 'encontrado' + (total !== 1 ? 's' : '') : 'disponible' + (total !== 1 ? 's' : '')}
+        <strong>${total}</strong> lugar${total !== 1 ? 'es' : ''} ${count !== undefined ? 'encontrado' + (total !== 1 ? 's' : '') : 'disponible' + (total !== 1 ? 's' : '')}
+        <div style="margin-top: 10px; font-size: 0.9em;">
+            <div><i class="fas fa-tree" style="color: #2E7D32;"></i> ${parques} parque${parques !== 1 ? 's' : ''}</div>
+            <div><i class="fas fa-film" style="color: #E91E63;"></i> ${cines} cine${cines !== 1 ? 's' : ''}</div>
+            <div><i class="fas fa-hotel" style="color: #FF9800;"></i> ${hoteles} hotel${hoteles !== 1 ? 'es' : ''}</div>
+            <div><i class="fas fa-landmark" style="color: #9C27B0;"></i> ${museos} museo${museos !== 1 ? 's' : ''}</div>
+        </div>
     `;
 }
 
@@ -484,6 +668,19 @@ popupStyles.textContent = `
         font-size: 1.15rem;
         font-weight: 600;
     }
+    .popup-content-custom .popup-tipo {
+        display: inline-block;
+        padding: 4px 10px;
+        background: #f0f0f0;
+        border-radius: 15px;
+        font-size: 0.85rem;
+        margin-bottom: 10px;
+        color: #555;
+        font-weight: 500;
+    }
+    .popup-content-custom .popup-tipo i {
+        margin-right: 5px;
+    }
     .popup-content-custom p {
         margin: 8px 0;
         font-size: 0.9rem;
@@ -522,6 +719,10 @@ popupStyles.textContent = `
         border: none;
     }
     .user-location-icon {
+        background: none;
+        border: none;
+    }
+    .cine-marker-icon, .hotel-marker-icon, .museo-marker-icon {
         background: none;
         border: none;
     }
