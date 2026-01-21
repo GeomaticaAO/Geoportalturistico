@@ -21,6 +21,14 @@ let limiteAlcaldiaLayer = null;
 let ejesVialesData = null;
 let rutaActual = null;
 
+// Variables de control de carga
+let capasCompletas = {
+    parques: false,
+    cines: false,
+    hoteles: false,
+    museos: false
+};
+
 // ======================================
 // INICIALIZACIÓN
 // ======================================
@@ -39,6 +47,26 @@ document.addEventListener('DOMContentLoaded', function() {
 function getURLParameter(name) {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get(name);
+}
+
+// ======================================
+// VERIFICAR SI TODAS LAS CAPAS ESTÁN CARGADAS Y ABRIR DESDE URL
+// ======================================
+function verificarYAbrirDesdeURL() {
+    // Verificar si hay un parámetro de URL
+    const tieneParametro = getURLParameter('parque') || 
+                          getURLParameter('cine') || 
+                          getURLParameter('hotel') || 
+                          getURLParameter('museo');
+    
+    if (!tieneParametro) return;
+    
+    // Verificar si todas las capas necesarias están cargadas
+    if (capasCompletas.parques && capasCompletas.cines && 
+        capasCompletas.hoteles && capasCompletas.museos) {
+        console.log('✅ Todas las capas cargadas, abriendo lugar desde URL...');
+        abrirParqueDesdeURL();
+    }
 }
 
 // ======================================
@@ -268,6 +296,8 @@ function loadData() {
             console.log('✅ Datos cargados:', data.features.length, 'parques');
             allData = data.features;
             processData(data.features, 'parque');
+            capasCompletas.parques = true;
+            verificarYAbrirDesdeURL();
             loadingIndicator.classList.remove('active');
         })
         .catch(error => {
@@ -291,6 +321,8 @@ function loadCines() {
         .then(data => {
             console.log('✅ Cines cargados:', data.features.length, 'cines');
             processData(data.features, 'cine');
+            capasCompletas.cines = true;
+            verificarYAbrirDesdeURL();
         })
         .catch(error => {
             console.error('❌ Error al cargar cines:', error);
@@ -311,6 +343,8 @@ function loadHoteles() {
         .then(data => {
             console.log('✅ Hoteles cargados:', data.features.length, 'hoteles');
             processData(data.features, 'hotel');
+            capasCompletas.hoteles = true;
+            verificarYAbrirDesdeURL();
         })
         .catch(error => {
             console.error('❌ Error al cargar hoteles:', error);
@@ -331,6 +365,8 @@ function loadMuseos() {
         .then(data => {
             console.log('✅ Museos cargados:', data.features.length, 'museos');
             processData(data.features, 'museo');
+            capasCompletas.museos = true;
+            verificarYAbrirDesdeURL();
         })
         .catch(error => {
             console.error('❌ Error al cargar museos:', error);
@@ -383,9 +419,6 @@ function processData(features, tipo) {
 
     // Actualizar información
     updateInfo();
-    
-    // Verificar si hay un lugar en la URL para abrirlo
-    abrirParqueDesdeURL();
 }
 
 // ======================================
