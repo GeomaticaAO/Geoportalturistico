@@ -42,14 +42,22 @@ function getURLParameter(name) {
 }
 
 // ======================================
-// ABRIR PARQUE ESPECÍFICO DESDE URL
+// ABRIR LUGAR ESPECÍFICO DESDE URL
 // ======================================
 function abrirParqueDesdeURL() {
+    // Revisar todos los parámetros posibles: parque, cine, hotel, museo
     const nombreParque = getURLParameter('parque');
-    if (!nombreParque) return;
+    const nombreCine = getURLParameter('cine');
+    const nombreHotel = getURLParameter('hotel');
+    const nombreMuseo = getURLParameter('museo');
     
-    // Decodificar correctamente el nombre del parque
-    let nombreBuscado = nombreParque.replace(/-/g, ' ');
+    let nombreBuscado = nombreParque || nombreCine || nombreHotel || nombreMuseo;
+    let tipoBuscado = nombreParque ? 'parque' : nombreCine ? 'cine' : nombreHotel ? 'hotel' : nombreMuseo ? 'museo' : null;
+    
+    if (!nombreBuscado) return;
+    
+    // Decodificar correctamente el nombre del lugar
+    nombreBuscado = nombreBuscado.replace(/-/g, ' ');
     
     // Intentar decodificar si tiene caracteres especiales
     try {
@@ -60,18 +68,18 @@ function abrirParqueDesdeURL() {
     
     nombreBuscado = nombreBuscado.toLowerCase();
     
-    console.log('🔍 Buscando parque:', nombreBuscado);
+    console.log('🔍 Buscando', tipoBuscado + ':', nombreBuscado);
     
-    // Buscar el parque en los marcadores con coincidencia exacta
-    let parqueEncontrado = allMarkers.find(item => {
-        const nombre = (item.data.properties.Name || '').toLowerCase();
+    // Buscar el lugar en los marcadores con coincidencia exacta
+    let lugarEncontrado = allMarkers.find(item => {
+        const nombre = (item.data.properties.Nombre || item.data.properties.Name || '').toLowerCase();
         return nombre === nombreBuscado;
     });
     
     // Si no se encuentra con coincidencia exacta, buscar parcial
-    if (!parqueEncontrado) {
-        parqueEncontrado = allMarkers.find(item => {
-            const nombre = (item.data.properties.Name || '').toLowerCase();
+    if (!lugarEncontrado) {
+        lugarEncontrado = allMarkers.find(item => {
+            const nombre = (item.data.properties.Nombre || item.data.properties.Name || '').toLowerCase();
             // Normalizar para comparar sin acentos
             const nombreNormalizado = nombre.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
             const buscadoNormalizado = nombreBuscado.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -79,22 +87,22 @@ function abrirParqueDesdeURL() {
         });
     }
     
-    if (parqueEncontrado) {
-        console.log('✅ Parque encontrado:', parqueEncontrado.data.properties.Name);
+    if (lugarEncontrado) {
+        console.log('✅ Lugar encontrado:', lugarEncontrado.data.properties.Nombre || lugarEncontrado.data.properties.Name);
         
-        // Hacer zoom al parque de forma más directa
-        map.flyTo([parqueEncontrado.lat, parqueEncontrado.lng], 18, {
+        // Hacer zoom al lugar de forma más directa
+        map.flyTo([lugarEncontrado.lat, lugarEncontrado.lng], 18, {
             animate: true,
             duration: 1.5
         });
         
         // Abrir el popup después de que termine la animación
         setTimeout(() => {
-            parqueEncontrado.marker.openPopup();
+            lugarEncontrado.marker.openPopup();
         }, 1600);
     } else {
-        console.warn('⚠️ No se encontró el parque:', nombreBuscado);
-        console.log('Parques disponibles:', allMarkers.map(m => m.data.properties.Name));
+        console.warn('⚠️ No se encontró el ' + tipoBuscado + ':', nombreBuscado);
+        console.log('Lugares disponibles:', allMarkers.map(m => m.data.properties.Nombre || m.data.properties.Name));
     }
 }
 
@@ -376,10 +384,8 @@ function processData(features, tipo) {
     // Actualizar información
     updateInfo();
     
-    // Verificar si hay un parque en la URL para abrirlo (solo para parques)
-    if (tipo === 'parque') {
-        abrirParqueDesdeURL();
-    }
+    // Verificar si hay un lugar en la URL para abrirlo
+    abrirParqueDesdeURL();
 }
 
 // ======================================
@@ -445,7 +451,8 @@ function createMarker(feature, lat, lng, tipo) {
 // CONTENIDO DEL POPUP
 // ======================================
 function createPopupContent(feature, tipo) {
-    const nombre = feature.properties.Name || 'Sin nombre';
+    // Usar 'Nombre' para cines, hoteles y museos; 'Name' para parques
+    const nombre = feature.properties.Nombre || feature.properties.Name || 'Sin nombre';
     const coords = feature.geometry.coordinates;
     const lat = coords[1];
     const lng = coords[0];
@@ -500,7 +507,8 @@ function filterMarkers() {
     markersLayer.clearLayers();
 
     const filtered = allMarkers.filter(item => {
-        const nombre = (item.data.properties.Name || '').toLowerCase();
+        // Buscar en 'Nombre' o 'Name' según la capa
+        const nombre = (item.data.properties.Nombre || item.data.properties.Name || '').toLowerCase();
         const matchesSearch = searchTerm === '' || nombre.includes(searchTerm);
         
         // Verificar si el tipo está habilitado
